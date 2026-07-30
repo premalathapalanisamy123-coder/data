@@ -1,0 +1,108 @@
+#include<stdio.h>
+#include<ctype.h> //for isalnum()
+#include<string.h>
+#include<stdlib.h>
+#define SIZE 10
+//stack implementation
+char stack[SIZE];
+int top=-1;
+//push operation
+void push(char ch)
+{
+if(top>=SIZE -1)
+{
+printf("stack overflow \n");
+return;
+}
+stack[++top]=ch;
+}
+//pop operation
+char pop()
+{
+if(top==-1)
+return '\0';
+return stack[top--];
+}
+//peek operation
+char peek()
+{
+if (top==-1)
+return '\0';
+return stack[top];
+}
+//precedence function
+int precedence (char ch)
+{
+switch(ch)
+{
+case '^':
+return 3;
+case '*':
+case '/':
+return 2;
+case '+':
+case '-':
+return 1;
+default:
+return 0;
+}
+}
+// infix to postfix conversion function
+void infixToPostfix(char*infix,char*postfix)
+{
+int i,k=0;
+char ch;
+for(i=0;infix[i]!='/0';i++)
+{
+ch=infix[i];
+if(isalnum(ch))
+{
+//operand
+postfix[k++]=ch;
+}
+else if(ch=='(')
+{
+push(ch);
+}
+else if(ch==')')
+{
+//operand
+postfix[k++]=ch;
+}
+else if(ch=='(')
+{
+push(ch);
+}
+else if(ch==')')
+{
+while(peek()!='('&&top!=-1)
+postfix[k++]=pop();
+pop();/*remove'('*/
+}
+//operator
+else
+{
+while (precedence(ch) <= precedence (peek())&&top != -1)
+{
+postfix[k++] =pop();
+}
+push(ch);
+}
+}
+//pop remaining operators
+while(top!=-1)
+{
+postfix[k++]=pop();
+}
+postfix[k]='\0';
+}
+int main()
+{
+char infix[SIZE],postfix[SIZE];
+printf("enter infix expression:");
+scanf("%s",infix);
+infixToPostfix(infix,postfix);
+printf("postfix expression:%s\n",postfix);
+return 0;
+}
+
